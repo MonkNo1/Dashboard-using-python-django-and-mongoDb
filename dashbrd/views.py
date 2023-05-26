@@ -30,12 +30,12 @@ def database_fetch():
         country.append(r['country'])
         unique_intensity = list(set(intensity))
         unique_country = list(set(country))
-    print(len(unique_country))
+    # print(len(unique_country))
     for i in unique_intensity:
-        print(i," = ", op.countOf(intensity, i))
+        # print(i," = ", op.countOf(intensity, i))
         intensity_count.append(op.countOf(intensity, i))
     for i in unique_country:
-        print(i," = ", op.countOf(country, i))
+        # print(i," = ", op.countOf(country, i))
         country_count.append(op.countOf(country, i))
     context = {
         "label_va" : unique_intensity,
@@ -50,14 +50,14 @@ def database_fetch():
     
 
 # Create your views here.
-def index(request):
-    return render(request,"index.html")
+def check(request):
+    return render(request,"base-copy.html")
 
 def login(request):
     # return render(request,"login.html")
     if request.method == "POST":
         if request.method == 'POST':
-            print("method check")
+            # print("method check")
             uname = request.POST['name']
             passw = request.POST['passw']   
             if uname == "admin" and passw == "admin":
