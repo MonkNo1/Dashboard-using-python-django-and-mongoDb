@@ -48,7 +48,32 @@ def database_fetch():
     }
     return context
     
-
+#logical error 
+def charttest():
+    counts = coll.find({})
+    years = []
+    yearc = []
+    for i in counts:
+        val = i["published"].split(" ")
+        try:
+            years.append(int(val[2]))            
+    # print(uni_year)
+        except:
+            pass
+    uni_year = list(set(years))
+    for i in uni_year:
+        yearc.append(op.countOf(years,i))    
+    print(yearc)
+    context = {
+        'yearlab' : uni_year,
+        'ycunt'   : yearc
+    }
+    return context
+#end of Logical error 
+def charts(request):
+    context = charttest()
+    return render(request,"charts.html",context)
+    
 # Create your views here.
 def check(request):
     return render(request,"base-copy.html")
