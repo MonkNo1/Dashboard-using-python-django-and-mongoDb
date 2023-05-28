@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from . import connectdb
+from .mongos import connectdb
+from .mongos import newusr
 import numpy as np
 import operator as op
 
 
 coll  = connectdb.makeconnection()
+user = connectdb.userconnection()
+
 
 def database_fetch():
     intensity = []
@@ -47,7 +50,37 @@ def database_fetch():
         "tab" : tabl
     }
     return context
-    
+
+def Admin(request):
+    if request.method == 'POST':
+        uname = request.POST['uname']
+        passw = request.POST['passw']
+        aname = request.POST['adminu']
+        apass = request.POST['adminp']
+        usr = newusr.getUserDet(user,aname,apass)
+        if usr:
+            newusr.CreateNewAdmin(user,uname,passw,aname)
+            context = database_fetch()
+            context['user'] = uname
+            return render(request,"index.html",context)
+        else:
+            return render(request,"register.html")
+    else:
+        return render(request,"register.html")
+
+
+def usercheck(request):
+    if request.method == "POST":
+        uname = request.POST['name']
+        passw = request.POST['passw']   
+        usr = newusr.getUserDet(user,uname,passw)
+        print(usr)
+        if usr:
+            return render(request,"404.html")
+        else :
+            return render(request,"login.html")
+    else:
+        return render(request,"login.html")
 #logical error 
 def charttest():
     counts = coll.find({})
@@ -70,8 +103,10 @@ def charttest():
     }
     return context
 #end of Logical error 
-def charts(request):
+def charts(request,user):
+    # user = request.GET.get(user)
     context = charttest()
+    context['user'] = user
     return render(request,"charts.html",context)
     
 # Create your views here.
@@ -85,7 +120,8 @@ def login(request):
             # print("method check")
             uname = request.POST['name']
             passw = request.POST['passw']   
-            if uname == "admin" and passw == "admin":
+            usr = newusr.getUserDet(user,uname,passw)
+            if usr:
                 context = database_fetch()
                 context['user'] = uname
                 return render(request,"index.html",context)
