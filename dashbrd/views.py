@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render,reverse
+from django.http import HttpResponse,HttpResponseRedirect
 from .mongos import connectdb
 from .mongos import newusr
 import numpy as np
@@ -69,18 +69,7 @@ def Admin(request):
         return render(request,"register.html")
 
 
-def usercheck(request):
-    if request.method == "POST":
-        uname = request.POST['name']
-        passw = request.POST['passw']   
-        usr = newusr.getUserDet(user,uname,passw)
-        print(usr)
-        if usr:
-            return render(request,"404.html")
-        else :
-            return render(request,"login.html")
-    else:
-        return render(request,"login.html")
+
 #logical error 
 def charttest():
     counts = coll.find({})
@@ -115,7 +104,14 @@ def check(request):
 
 def login(request):
     # return render(request,"login.html")
-    if request.method == "POST":
+    if 'Cookie' in request.COOKIES :
+        context = database_fetch()
+        usna = request.COOKIES['Cookie']
+        context['user'] = usna
+        response = render(request,"index.html",context)
+        return response
+    
+    elif request.method == "POST":
         if request.method == 'POST':
             # print("method check")
             uname = request.POST['name']
@@ -124,9 +120,39 @@ def login(request):
             if usr:
                 context = database_fetch()
                 context['user'] = uname
-                return render(request,"index.html",context)
+                response = render(request,"index.html",context)
+                response.set_cookie("Cookie",uname)
+                return response
             else:
                 return render(request,"login.html")
+            
     else :
         return render(request,"login.html")
         
+def logout(request):
+    response = HttpResponseRedirect(reverse('login'))
+    response.delete_cookie('Cookie')
+    return response
+
+def dashbrd(request):
+    if 'Cookie' in request.COOKIES :
+        context = database_fetch()
+        usna = request.COOKIES['Cookie']
+        context['user'] = usna
+        response = render(request,"index.html",context)
+        return response
+    else:
+        return render(request,"login.html")
+
+# def usercheck(request):
+#     if request.method == "POST":
+#         uname = request.POST['name']
+#         passw = request.POST['passw']   
+#         usr = newusr.getUserDet(user,uname,passw)
+#         print(usr)
+#         if usr:
+#             return render(request,"404.html")
+#         else :
+#             return render(request,"login.html")
+#     else:
+#         return render(request,"login.html")
