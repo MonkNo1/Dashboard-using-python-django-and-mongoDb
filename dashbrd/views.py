@@ -9,6 +9,16 @@ import operator as op
 coll  = connectdb.makeconnection()
 user = connectdb.userconnection()
 
+def error_404_view(request,exception):
+    return render(request,'404.html')
+
+def error_505_view(request,exception):
+    return render(request,'404.html')
+
+def error_401_view(request,exception):
+    return render(request,'404.html')
+
+
 
 def database_fetch():
     intensity = []
@@ -50,6 +60,17 @@ def database_fetch():
         "tab" : tabl
     }
     return context
+
+def tables(request,user):
+    if 'Cookie' in request.COOKIES :
+        context = database_fetch()
+        usna = request.COOKIES['Cookie']
+        context['user'] = usna
+        response = render(request,"tables.html",context)
+        return response
+    else:
+        return render(request,'login.html')
+            
 
 def Admin(request):
     if request.method == 'POST':
@@ -97,10 +118,6 @@ def charts(request,user):
     context = charttest()
     context['user'] = user
     return render(request,"charts.html",context)
-    
-# Create your views here.
-def check(request):
-    return render(request,"base-copy.html")
 
 def login(request):
     # return render(request,"login.html")
@@ -134,6 +151,7 @@ def logout(request):
     response.delete_cookie('Cookie')
     return response
 
+
 def dashbrd(request):
     if 'Cookie' in request.COOKIES :
         context = database_fetch()
@@ -144,6 +162,26 @@ def dashbrd(request):
     else:
         return render(request,"login.html")
 
+def back(request,user):
+    response = HttpResponseRedirect(reverse('login'))
+    return response
+
+def chartToTable(request,user,unm):
+    if 'Cookie' in request.COOKIES :
+        context = database_fetch()
+        usna = request.COOKIES['Cookie']
+        context['user'] = usna
+        response = render(request,"tables.html",context)
+        return response
+    else:
+        return render(request,'login.html')
+    
+    
+def tableToCharts(request,user,unm):
+    context = charttest()
+    context['user'] = user
+    return render(request,"charts.html",context)
+    
 # def usercheck(request):
 #     if request.method == "POST":
 #         uname = request.POST['name']

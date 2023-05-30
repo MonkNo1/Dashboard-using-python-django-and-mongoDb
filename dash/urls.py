@@ -21,3 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('dashbrd.urls'))
 ]
+
+
+handler404 = 'dashbrd.views.error_404_view'
+handler401 = 'dashbrd.views.error_401_view'
+handler505 = 'dashbrd.views.error_505_view'
