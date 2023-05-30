@@ -4,7 +4,7 @@ py -m venv envs
 envs\Scripts\activate.bat
 ```
 Now the envs will be activated <br>
-now clone the repo using ```git clone https://github.com/MonkNo1/Dashboard-py/```<br>
+now clone the repo using ```git clone https://github.com/MonkNo1/Dashboard-using-python-django-and-mongoDb.git```<br>
 now start the mongoDb server <br>
 install required Pip installation using ```pip install -r requirement.txt ```<br>
 check for migrations : ``` py manage.py makemigrations ```<br>
